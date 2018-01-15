@@ -54,7 +54,9 @@ duoshuo_username: mengran
 # Share component is depend on Comment so we can NOT use share only.
 duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
-
+# LiveRe setttings
+# You can get your uid from https://livere.com/insight/myCode (General web site)
+livere_uid: MTAyMC8zMzI1Ny85ODE0
 
 
 # Analytics settings
