@@ -1,7 +1,9 @@
 ---
 layout:      post
-title:       solution to "unable to find utility packageapplication"
+title:       Solution to "unable to find utility packageapplication"
 data:        2018-04-02
+tags:
+    - Solution
 ---
 
 # xrun: error: unable to find utility "PackageApplication", not a developer tool or in PATH
