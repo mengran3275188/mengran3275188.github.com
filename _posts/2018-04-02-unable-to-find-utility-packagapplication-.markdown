@@ -17,7 +17,7 @@ data:        2018-04-02
 
 > chmode +x /Application/Xcode.app/Contetns/Developer/Platforms/iPhonesOS.platform/Developer/usr/bin/PackageApplication
 
-在这里存一下[PackageApplication](packages/PackageApplication.zip) 方便下载
+在这里存一下[PackageApplication](/packages/PackageApplication.zip) 方便下载
 
 
 
