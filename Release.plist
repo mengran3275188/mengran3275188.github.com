@@ -12,7 +12,7 @@
                     <string>software-package</string>
                     <key>url</key>
                     //这个地方写ipa地址
-                    <string>ftp://192.168.1.110/Package/ios_build-716/kingofruin.ipa.ipa</string>
+                    <string>http://192.168.1.169:9520/Static/kingofruin.ipa</string>
                 </dict>
                 <dict>
                     <key>kind</key>
