@@ -1,0 +1,19 @@
+---
+layout:     post
+title:      部落破坏王wiki
+header-img: "img/post-bg-2015.jpg"
+tags:
+    -工作
+---
+# 地址环境
+    svn地址 : https://192.168.1.110/svn/ZZZ
+    ftp地址 : ftp://192.168.1.110
+    iOS打包地址 ：http://192.168.1.13:8080
+    Android打包地址 ：http://192.168.1.13:8080
+    腾讯云自动部署 ：http://192.168.1.13:8080
+
+# 账号密码
+    110登陆密码： admin bzt20170302
+
+
+
