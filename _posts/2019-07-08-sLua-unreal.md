@@ -207,8 +207,9 @@ struct AutoStack {
 	}
  ```
  LuaScriptCallGuard为额外线程检测c++调用lua方法是否死锁，单个方法调用超过5s会触发超时。
- # LuaObject
- ## 创建Userdata,并向luaVM注册metatable。
+ ## LuaObject
+ ### 创建Userdata,并向luaVM注册metatable
+ 
  ```
 template<class T, ESPMode mode, bool F = IsUObject<T>::value>
 static int pushType(lua_State* L, SharedRefUD<T, mode>* cls, const char* tn);
@@ -247,7 +248,7 @@ static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt=null
 	return 1;
 }
   ```
-  ## 将值从c++压入LuaVM
+  ### 将值从c++压入LuaVM
   LuaObject类提供了34个同名的重载函数来实现，这里通过归纳为以下几类来分别说明：
   - c/c++基本类型（int,bool, void...）
   - Unreal string类型（FText, FString, FName）
