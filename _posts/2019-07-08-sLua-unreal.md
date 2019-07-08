@@ -121,7 +121,7 @@ lightuserdata和其他基本类型类似，初始化的过程是将指针的值�
 	void set(const LuaLString& lstr);
 	void set(bool b);
  ```
- ### 提取值
+### 提取值
  提取简单值类型
  ```
 	int asInt() const;
@@ -180,6 +180,75 @@ struct AutoStack {
 	int top;
 };
  ```
+ ### 方法调用
+ 这里的方法调用，假设所有参数已经都在LuaVM栈上。
+ ```
+ 	int LuaVar::docall(int argn) const {
+		if (!isValid()) {
+			Log::Error("State of lua function is invalid");
+			return 0;
+		}
+		auto L = getState();
+		int top = lua_gettop(L);
+		top = top - argn + 1;
+		LuaState::pushErrorHandler(L);
+		lua_insert(L, top);
+		vars[0].ref->push(L);
+
+		{
+			LuaScriptCallGuard g(L);
+			lua_insert(L, top + 1);
+			// top is err handler
+			if (lua_pcallk(L, argn, LUA_MULTRET, top, NULL, NULL))
+				lua_pop(L, 1);
+			lua_remove(L, top); // remove err handler;
+		}
+		return lua_gettop(L) - top + 1;
+	}
+ ```
+ LuaScriptCallGuard为额外线程检测c++调用lua方法是否死锁，单个方法调用超过5s会触发超时。
+ # LuaObject
+ ## 创建Userdata,并向luaVM注册metatable。
+ ```
+template<class T, ESPMode mode, bool F = IsUObject<T>::value>
+static int pushType(lua_State* L, SharedRefUD<T, mode>* cls, const char* tn);
+
+template<class T,ESPMode mode, bool F = IsUObject<T>::value>
+static int pushType(lua_State* L, SharedPtrUD<T, mode>* cls, const char* tn);
+
+template<class T, bool F = IsUObject<T>::value>
+static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt,int gc);
+
+template<class T, bool F = IsUObject<T>::value >
+static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt=nullptr,lua_CFunction gc=nullptr);
+
+template<>
+inline int LuaObject::pushType<LuaStruct*, false>(lua_State* L, LuaStruct* cls,
+		const char* tn, lua_CFunction setupmt, lua_CFunction gc);
+
+ ```
+ 前两个函数用来处理SharedRef<T>或SharedPtr<T>类型，后面两个函数是两个模板函数，用来处理其他类型，最后一个函数是第三个函数的全特化版本，针对LuaStruct*类型做了特殊处理。虽然这里用五个函数来分别实现pushType操作，但是这五个函数的大部分代码都是一致的，这里列出其中一个函数的实现，注释里会说明其他函数的不同之处。
+  ```
+template<class T, bool F = IsUObject<T>::value >
+static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt=nullptr,lua_CFunction gc=nullptr) {
+	if(!cls) {
+		lua_pushnil(L);
+		return 1;
+	}
+   // 这里UserData<T>不同的函数会采用不同的类型
+   // LuaStruct 会使用 UserData<LuaStruct*>
+   // SharedRef<T> 和 SharedPtr<T>会使用对应的包装类 UserData<BOXPUD*>，避免智能指针在LuaVM里传递。
+	UserData<T>* ud = reinterpret_cast< UserData<T>* >(lua_newuserdata(L, sizeof(UserData<T>)));
+	ud->parent = nullptr;
+	ud->ud = cls;
+	ud->flag = gc!=nullptr?UD_AUTOGC:UD_NOFLAG;
+	if (F) ud->flag |= UD_UOBJECT;  //根据实际类型打上不同标签  UD_UOBJECT|UD_THREADSAFEPTR|UD_USTRUCT
+	setupMetaTable(L,tn,setupmt,gc);
+	return 1;
+}
+  ```
+
+ 
  
  
  
