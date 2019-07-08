@@ -208,9 +208,10 @@ struct AutoStack {
  ```
  LuaScriptCallGuard为额外线程检测c++调用lua方法是否死锁，单个方法调用超过5s会触发超时。
  ## LuaObject
+ 
  ### 创建Userdata,并向luaVM注册metatable
  
- ```
+```
 template<class T, ESPMode mode, bool F = IsUObject<T>::value>
 static int pushType(lua_State* L, SharedRefUD<T, mode>* cls, const char* tn);
 
