@@ -1,14 +1,16 @@
 ---
-layout: blog
+layout: post
+tags :
+    - 游戏设计
 published: true
 ---
 # sLua-unreal 实现分析
 本文从源码分析入手，主要关注点在实现原理、功能覆盖度和效率问题。
 # LuaVar
 LuaVar 用于c++测包装任何的lua值的对象，针对不同的lua类型提供了一系列的数据获取和设置方法。
-1. 直接获取简单类型的值
-2. 根据路径访问和设置table
-3. 调用lua测闭包
+- 直接获取简单类型的值
+- 根据路径访问和设置table
+- 调用lua测闭包
 ## LuaVar内部值表示
 LuaVar内部采用了和LuaVM一致的值表示，使用一个union + type的方式用一个结构体表示所有类型。也就是说定义的变量中不包含类型的信息，只有相应的值才会包含类型信息。
 ```
@@ -249,9 +251,9 @@ static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt=null
 	return 1;
 }
   ```
-  ### 将值从c++压入LuaVM
-  LuaObject类提供了34个同名的重载函数来实现，这里通过归纳为以下几类来分别说明：
-  - c/c++基本类型（int,bool, void...）
+### 将值从c++压入LuaVM
+LuaObject类提供了34个同名的重载函数来实现，这里通过归纳为以下几类来分别说明：
+  - C/C++基本类型（int,bool, void...）
   - Unreal string类型（FText, FString, FName）
   - Unreal UObject
   - TSharedPtr、TSharedRef
