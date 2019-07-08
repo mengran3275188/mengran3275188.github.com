@@ -247,6 +247,17 @@ static int pushType(lua_State* L,T cls,const char* tn,lua_CFunction setupmt=null
 	return 1;
 }
   ```
+  ## 将值从c++压入LuaVM
+  LuaObject类提供了34个同名的重载函数来实现，这里通过归纳为以下几类来分别说明：
+  - c/c++基本类型（int,bool, void...）
+  - Unreal string类型（FText, FString, FName）
+  - Unreal UObject
+  - TSharedPtr、TSharedRef
+  - TBaseDelegate
+  - TArray、 TMap
+  
+  
+  
 
  
  
