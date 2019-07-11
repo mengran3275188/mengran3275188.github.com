@@ -259,9 +259,38 @@ LuaObject类提供了34个同名的重载函数来实现，这里通过归纳为
   - TSharedPtr、TSharedRef
   - TBaseDelegate
   - TArray、 TMap
-  
-  
-  
+
+### 将值从LuaVM取出到c++
+
+### LuaFunction、BaseDelegate
+Delegate和回调函数需要单独拿出来写。
+
+## 胶水代码生成
+sLua-Unreal提供了3种方式导出胶水代码方式
+
+### 蓝图类(UClass)基于C++反射自动导出
+### 静态代码生成（基于libclang静态分析c++代码，未开源）
+### CppBinding(sLua-Unreal实现的模板展开)
+导出非蓝图类，导出蓝图类非蓝图方法。
+
+###  扩展类和扩展方法
+LuaActor、LuaUserWidget、LuaBlueprintLibrary;
+LuaArray、LuaMap
+
+## 结论
+sLua-Unreal提供了三种胶水代码生成方式，可以自动导出蓝图类胶水代码，简化了手动导出非蓝图类和蓝图类非蓝图方法胶水代码的流程，与手写代码并无效率差异。随工程提供了Unreal常用结构体的胶水代码。
+提供了LuaActor等Unreal Gameplay 大部分蓝图类的包装类，可以直接在编辑器里配置lua扩展文件。
+完整的封装了C++/Lua的交互流程，用户可以通过上层泛型接口直接从c++调用Lua方法，获取table中的数据，不需要考虑数据类型、资源管理等繁琐问题。
+
+与Unity Lua解决方案比较，效率会高一个数量级以上。
+不完善的地方在于Lua调用蓝图类方法只可以通过反射去调用，CppBinding和静态代码生成胶水代码的方式和蓝图类冲突，胶水代码生成和直接通过反射去调用蓝图类方法的效率差距在一个数量级左右。这块需要去考虑要不要优化和如何优化。
+
+代码本身能看出一些c#代码的影子，由于C++没有反射，为了处理C++和Lua交互上的类型问题使用了大量硬编码的模板特化。Unreal 代码的升级或者新基类的添加会有阵痛。部分代码有临时代码的嫌疑，比如对智能指针、智能引用的支持，引用折叠和移动语义的支持等。可能会有代码结构大幅变动的风险。
+
+对Dedicated Server的支持需要验证，git上的open issues很多都只向NetMulticast、Repicated等Dedicated Server功能。
+
+没有Lua Framework 支持，UI和Lua的交互待验证。
+
 
  
  
